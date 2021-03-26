@@ -26,10 +26,10 @@ public class TwitchChat : MonoBehaviour
             // Clear all Votes
             Votes.VotesList.Clear();
             currentQuestion = (Question)Questions.Value[currentQuestionIndex.Value];
-            //IRC.SendChatMessage("Voting started");
+            IRC.SendChatMessage("Voting started");
         }
-        //else
-        //    IRC.SendChatMessage("Voting ended");
+        else
+            IRC.SendChatMessage("Voting ended");
 
     }
 

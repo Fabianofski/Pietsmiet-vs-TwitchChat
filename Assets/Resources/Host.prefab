@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6743778587747267975}
   - component: {fileID: 6743778587747267969}
   - component: {fileID: 6743778587747267968}
-  - component: {fileID: 7784846662471753705}
   m_Layer: 0
   m_Name: Host
   m_TagString: Untagged
@@ -105,7 +104,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6743778587747267969}
         m_TargetAssemblyTypeName: Host, Assembly-CSharp
-        m_MethodName: NextQuestion
+        m_MethodName: NextState
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -117,22 +116,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 93c850db-f41c-4a79-b2e7-673eaf97bc9f
     m_ActionName: Player/StartVoting[/Keyboard/v]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6743778587747267969}
-        m_TargetAssemblyTypeName: Host, Assembly-CSharp
-        m_MethodName: ReveilAnswer
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: dc8dcee8-9c4a-4889-93cf-cb874376c2c5
-    m_ActionName: Player/ReveilAnswer[/Keyboard/r]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -150,6 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a86d4235ef2157648a727dfaaba35577, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HostStateMachine: {fileID: 11400000, guid: 4807b23719ed0b747b72d78f1956589f, type: 2}
   VotingTime: {fileID: 11400000, guid: 198033e5c69728e4ab9687a24a1a16d2, type: 2}
   VotingTimer:
     _usage: 2
@@ -190,6 +174,7 @@ MonoBehaviour:
     _variable: {fileID: 11400000, guid: 0ce03b9f30b38d941a248fd2e3061343, type: 2}
     _variableInstancer: {fileID: 0}
   ChatVotes: {fileID: 11400000, guid: ccb45384c45d9ec4d83a57ec6032316d, type: 2}
+  TwitchChatIRC: {fileID: 8889533932290662042}
 --- !u!114 &6743778587747267968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,28 +200,6 @@ MonoBehaviour:
     _constant: {fileID: 0}
     _variable: {fileID: 11400000, guid: c0ec104b4defaec408dd8904b4bd985e, type: 2}
     _variableInstancer: {fileID: 0}
---- !u!114 &7784846662471753705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6743778587747267972}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  observableSearch: 2
-  Synchronization: 3
-  OwnershipTransfer: 0
-  ObservedComponents: []
-  viewIdField: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1001 &6058123660088085616
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -247,6 +210,10 @@ PrefabInstance:
     - target: {fileID: 3409013107849679594, guid: 48542eaf6120b1546a56e4dfe670f508, type: 3}
       propertyPath: m_Name
       value: Twitch
+      objectReference: {fileID: 0}
+    - target: {fileID: 3409013107849679594, guid: 48542eaf6120b1546a56e4dfe670f508, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3409013107849679597, guid: 48542eaf6120b1546a56e4dfe670f508, type: 3}
       propertyPath: m_RootOrder
@@ -294,6 +261,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48542eaf6120b1546a56e4dfe670f508, type: 3}
+--- !u!1 &8889533932290662042 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3409013107849679594, guid: 48542eaf6120b1546a56e4dfe670f508, type: 3}
+  m_PrefabInstance: {fileID: 6058123660088085616}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8889533932290662045 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3409013107849679597, guid: 48542eaf6120b1546a56e4dfe670f508, type: 3}

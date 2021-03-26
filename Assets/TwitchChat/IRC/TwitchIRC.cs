@@ -143,7 +143,7 @@ public class TwitchIRC : MonoBehaviour
 
     private void IRCInputProc()
     {
-        Debug.Log("IRCInput Thread (Receive) started");
+        //Debug.Log("IRCInput Thread (Receive) started");
 
         using (StreamReader reader = new StreamReader(stream)) 
         {
@@ -224,7 +224,7 @@ public class TwitchIRC : MonoBehaviour
     private Queue<string> outputQueue = new Queue<string>();
     private void IRCOutputProc()
     {
-        Debug.Log("IRCOutput Thread (Send) started");
+        //Debug.Log("IRCOutput Thread (Send) started");
 
         System.Diagnostics.Stopwatch cooldown = new System.Diagnostics.Stopwatch();
         

@@ -59,7 +59,7 @@ public class ChatDisplay : MonoBehaviour
         displayType = currentQuestion.displayType;
     }
 
-    private void UpdateVotings()
+    public void UpdateVotings()
     {
         switch (displayType)
         {

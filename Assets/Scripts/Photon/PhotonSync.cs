@@ -5,6 +5,7 @@ using Photon.Pun;
 using UnityAtoms.BaseAtoms;
 using UnityAtoms;
 using TMPro;
+using Photon.Realtime;
 
 public class PhotonSync : MonoBehaviourPun
 {
@@ -22,83 +23,118 @@ public class PhotonSync : MonoBehaviourPun
 
     [Header("Answers")]
     [SerializeField] VoteList PSVotes;
+    [SerializeField] VoteList ChatVotes;
     [SerializeField] BoolEventReference ReveilAnswerEvent;
     [SerializeField] TMP_InputField InputFieldAnswer;
 
     [Header("Score")]
     [SerializeField] IntEventReference UpdateChatScoreEvent;
     [SerializeField] IntEventReference UpdatePSScoreEvent;
+    [SerializeField] VoidBaseEventReference UpdateDisplayEvent;
 
     private void Awake()
     {
-        if(!photonView.Owner.IsMasterClient)
+        if (!photonView.Owner.IsMasterClient)
+        {
+            InputFieldAnswer.placeholder.GetComponent<TextMeshProUGUI>().text = photonView.Owner.NickName;
             SetParentEvent.Event.Raise(gameObject.transform.parent.gameObject);
+            InputFieldAnswer.interactable = photonView.IsMine;
+        }
     }
 
-    public void NextQuestion(bool _VotingsOpened)
-    {
-        if(_VotingsOpened && PhotonNetwork.IsMasterClient && photonView.IsMine)
-            photonView.RPC("NextQuestionRPC", RpcTarget.Others);
-    }
+    #region Sync Timer
 
-    public void ReveilAnswer(bool _showAnswer)
+    public void StartVoting()
     {
-        if (PhotonNetwork.IsMasterClient && photonView.IsMine)
-            photonView.RPC("ReveilAnswerRPC", RpcTarget.Others, _showAnswer);
-    }
+        PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
 
-    public void UpdatePSScore(int _score)
-    {
-        if (PhotonNetwork.IsMasterClient && photonView.IsMine)
-            photonView.RPC("UpdatePSScoreRPC", RpcTarget.Others, _score);
-    }
-
-    public void UpdateChatScore(int _score)
-    {
-        if (PhotonNetwork.IsMasterClient && photonView.IsMine)
-            photonView.RPC("UpdateChatScoreRPC", RpcTarget.Others, _score);
-    }
-
-    public void VotingEnded(bool _state)
-    {
-        if(!_state && !PhotonNetwork.IsMasterClient && photonView.IsMine)
-            photonView.RPC("ReceiveAnswer", RpcTarget.MasterClient, InputFieldAnswer.text);
+        foreach (PhotonView photonView in photonViews)
+            if (!photonView.Owner.IsMasterClient)
+                photonView.RPC("StartVotingRPC", photonView.Owner);
     }
 
     [PunRPC]
-    void NextQuestionRPC()
+    void StartVotingRPC()
     {
-        Debug.LogError("Next");
-        currentQuestionIndex.Value++;
         VotingsOpen.Value = true;
         VotingTimer.Value = VotingTime.Value;
     }
 
-    [PunRPC]
-    void ReveilAnswerRPC(bool _showAnswer)
+    #endregion
+
+    #region Sync Votes
+    public void UpdateVotes()
     {
-        ReveilAnswerEvent.Event.Raise(_showAnswer);
+        SendCalltoClient();
+        SendChatVotesToClient();
+    }
+
+    #region PSVotesToMaster
+    public void SendCalltoClient()
+    {
+        PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
+
+        foreach (PhotonView photonView in photonViews)
+            if (!photonView.Owner.IsMasterClient)
+                photonView.RPC("SendVotesToMasterRPC", photonView.Owner);
     }
 
     [PunRPC]
-    void UpdatePSScoreRPC(int _score)
+    public void SendVotesToMasterRPC()
     {
-        UpdatePSScoreEvent.Event.Raise(_score);
+        string _message = InputFieldAnswer.text;
+        PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
+
+        photonView.RPC("UpdateInputFieldRPC", RpcTarget.All, _message);
+
+        foreach (PhotonView photonView in photonViews)
+            photonView.RPC("ReceiveAnswerRPC", RpcTarget.All, _message);
     }
 
     [PunRPC]
-    void UpdateChatScoreRPC(int _score)
+    void UpdateInputFieldRPC(string _answer)
     {
-        UpdateChatScoreEvent.Event.Raise(_score);
+        InputFieldAnswer.text = _answer;
     }
 
     [PunRPC]
-    void ReceiveAnswer(string _answer)
+    void ReceiveAnswerRPC(string _answer)
     {
-        Debug.Log("Received Vote: " + _answer);
+        if (!photonView.IsMine) return;
+
+        Debug.Log($"Received Vote: { _answer}");
         CountVote(PSVotes, _answer);
+        UpdateDisplay();
+    }
+    #endregion
+
+    #region ChatVotesToClient
+    public void SendChatVotesToClient()
+    {
+        PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
+
+        foreach (PhotonView photonView in photonViews)
+            if (!photonView.Owner.IsMasterClient)
+                foreach (Vote vote in ChatVotes.VotesList)
+                    photonView.RPC("ClientReceiveAnswers", photonView.Owner, vote.message, vote.amount);
     }
 
+    [PunRPC]
+    void ClientReceiveAnswers(string _answer, int _amount)
+    {
+        if (!photonView.IsMine) return;
+
+        Debug.Log("Received Vote: " + _answer + " " + _amount);
+        Vote vote = new Vote() { message = _answer, amount = _amount };
+        ChatVotes.VotesList.Add(vote);
+        UpdateDisplay();
+    }
+
+    #endregion
+    void UpdateDisplay()
+    {
+        UpdateDisplayEvent.Event.Raise();
+    }
     public void CountVote(VoteList _list, string _answer)
     {
         // Return if Answer is not valid
@@ -118,5 +154,69 @@ public class PhotonSync : MonoBehaviourPun
             }
         Vote NewVote = new Vote() { message = _answer, amount = 1 };
         _list.VotesList.Add(NewVote);
+    }
+    #endregion
+
+    #region Sync Answer
+    public void ReveilAnswer(bool _showAnswer)
+    {
+        photonView.RPC("ReveilAnswerRPC", RpcTarget.All, _showAnswer);
+    }
+
+    [PunRPC]
+    void ReveilAnswerRPC(bool _showAnswer)
+    {
+        ReveilAnswerEvent.Event.Raise(_showAnswer);
+    }
+    #endregion
+
+    #region Sync Score
+    public void UpdateScore(int _psScore, int _chatScore)
+    {
+        UpdatePSScore(_psScore);
+        UpdateChatScore(_chatScore);
+    }
+
+    void UpdatePSScore(int _score)
+    {
+        photonView.RPC("UpdatePSScoreRPC", RpcTarget.Others, _score);
+    }
+
+    void UpdateChatScore(int _score)
+    {
+        photonView.RPC("UpdateChatScoreRPC", RpcTarget.Others, _score);
+    }
+
+    [PunRPC]
+    void UpdatePSScoreRPC(int _score)
+    {
+        UpdatePSScoreEvent.Event.Raise(_score);
+    }
+
+    [PunRPC]
+    void UpdateChatScoreRPC(int _score)
+    {
+        UpdateChatScoreEvent.Event.Raise(_score);
+    }
+    #endregion
+
+    #region Sync Questions
+    public void NextQuestion(int _index)
+    {
+        photonView.RPC("NextQuestionRPC", RpcTarget.All, _index);
+    }
+
+    [PunRPC]
+    void NextQuestionRPC(int _index)
+    {
+        ChatVotes.VotesList.Clear();
+        PSVotes.VotesList.Clear();
+        currentQuestionIndex.Value = _index;
+    }
+    #endregion
+
+    public void EnableInputField(bool _state)
+    {
+        InputFieldAnswer.interactable = _state && photonView.IsMine;
     }
 }

@@ -6,17 +6,9 @@
             "id": "f0468d69-5696-429f-8a7a-7d9cdc19109c",
             "actions": [
                 {
-                    "name": "NextQuestion",
+                    "name": "NextState",
                     "type": "Button",
                     "id": "93c850db-f41c-4a79-b2e7-673eaf97bc9f",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "ReveilAnswer",
-                    "type": "Button",
-                    "id": "dc8dcee8-9c4a-4889-93cf-cb874376c2c5",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -26,22 +18,11 @@
                 {
                     "name": "",
                     "id": "ba3ab2ee-5ccf-4761-b040-503b9558894b",
-                    "path": "<Keyboard>/v",
+                    "path": "<Keyboard>/anyKey",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "NextQuestion",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "016ee3ff-b0cf-4021-a2fa-24faa2d5b45c",
-                    "path": "<Keyboard>/r",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ReveilAnswer",
+                    "action": "NextState",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

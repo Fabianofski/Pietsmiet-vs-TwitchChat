@@ -18,6 +18,10 @@ public class PlayerSpawner : MonoBehaviour
 
     public void SetParent(GameObject _child)
     {
-        _child.GetComponent<RectTransform>().SetParent(transform.parent);
+        RectTransform rect = _child.GetComponent<RectTransform>();
+
+        rect.SetParent(transform.parent);
+        rect.localScale = Vector3.one;
+
     }
 }

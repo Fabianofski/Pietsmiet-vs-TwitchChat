@@ -47,6 +47,15 @@ MonoBehaviour:
   - UpdatePSScoreRPC
   - SpawnPlayer
   - ReceiveAnswer
+  - ClientReceiveVotings
+  - ClientReceiveAnswers
+  - MasterReceiveAnswers
+  - SendVotesToMaster
+  - StartVotingRPC
+  - UpdateDisplay
+  - ReceiveAnswerRPC
+  - SendVotesToMasterRPC
+  - UpdateInputFieldRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

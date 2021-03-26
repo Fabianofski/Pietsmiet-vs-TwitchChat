@@ -18,7 +18,19 @@ public class Question : UnityAtoms.AtomBaseVariable<object>
     [Header("Question")]
     public string Title;
 
-    [Header("Answer")]
+    [Header("Voting Options")]
+    public List<string> StringOptions;
+    public List<Sprite> ImgOptions;
+
+    [Header("Voting")]
+    [Tooltip("Limits Integer/ Float Votes in this Range or the character Length of a Vote, If x,y = 0 Range is disabled, ")]
     public Vector2 ValidRange;
-    public string Answer;
+    [Tooltip("Only allow certain Answers. Leave empty if many Answers")]
+    public List<string> ValidVotes;
+
+    [Header("Answer")]
+    [Tooltip("Amount of Answers that should be displayed. Displays the first - AnswerDisplayAmount Answers")]
+    [Range(1, 5)]
+    public int AnswerDisplayAmount = 1;
+    public List<string> Answer;
 }

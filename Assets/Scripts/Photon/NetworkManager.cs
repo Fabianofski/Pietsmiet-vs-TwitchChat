@@ -13,8 +13,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public GameObject LobbyPanel;
 
-    public TMP_InputField RoomCodeInput;
-    [SerializeField] GameObjectEvent SetParentEvent;
+    [SerializeField] TMP_InputField NickNameInput;
+    [SerializeField] TMP_InputField RoomCodeInput;
 
     #region ConnectToServer
 
@@ -53,11 +53,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #region CreateRooms
     public void HostGame()
     {
+        PhotonNetwork.NickName = NickNameInput.text;
         PhotonNetwork.CreateRoom(RoomCodeInput.text);
     }
 
     public void JoinRoom()
     {
+        PhotonNetwork.NickName = NickNameInput.text;
         PhotonNetwork.JoinRoom(RoomCodeInput.text);
     }
 

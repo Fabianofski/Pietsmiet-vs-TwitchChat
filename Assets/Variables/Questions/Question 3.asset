@@ -18,5 +18,14 @@ MonoBehaviour:
   displayType: 0
   answerType: 1
   Title: "Wie viel kostet eine Friko im Br\xF6tchen "
+  StringOptions: []
+  ImgOptions:
+  - {fileID: 21300000, guid: 7377013011b4c3348809ff574abe799e, type: 3}
   ValidRange: {x: -100, y: 100}
-  Answer: 2,1
+  ValidVotes: []
+  AnswerDisplayAmount: 1
+  Answer:
+  - 23
+  - 2
+  - 213
+  - 23

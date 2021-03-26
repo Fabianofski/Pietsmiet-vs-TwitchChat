@@ -18,5 +18,17 @@ MonoBehaviour:
   displayType: 2
   answerType: 0
   Title: "Wie hei\xDFt Herr Smits mit Vornamen?"
+  StringOptions: []
+  ImgOptions:
+  - {fileID: 21300000, guid: 7377013011b4c3348809ff574abe799e, type: 3}
   ValidRange: {x: 0, y: 0}
-  Answer: Peter
+  ValidVotes:
+  - Peter
+  - Pitt
+  - Pedda
+  AnswerDisplayAmount: 1
+  Answer:
+  - Peter
+  - Pitt
+  - Pedda
+  - Pedda

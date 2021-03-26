@@ -18,5 +18,13 @@ MonoBehaviour:
   displayType: 0
   answerType: 1
   Title: Wie viele Abonennten hat Pietsmiet auf YT?
-  ValidRange: {x: 0, y: 10000000}
-  Answer: 4000000
+  StringOptions: []
+  ImgOptions: []
+  ValidRange: {x: 0, y: 0}
+  ValidVotes: []
+  AnswerDisplayAmount: 1
+  Answer:
+  - 4000000
+  - 4000000
+  - 4000000
+  - 4000000
