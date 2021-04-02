@@ -11,7 +11,8 @@ using UnityAtoms.BaseAtoms;
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
 
-    public GameObject LobbyPanel;
+    [SerializeField] GameObject LobbyPanel;
+    [SerializeField] GameObject LoadingPanel;
 
     [SerializeField] TMP_InputField NickNameInput;
     [SerializeField] TMP_InputField RoomCodeInput;
@@ -39,6 +40,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         LobbyPanel.SetActive(true);
+        LoadingPanel.SetActive(false);
         Debug.Log("Joined Lobby");
     }
 

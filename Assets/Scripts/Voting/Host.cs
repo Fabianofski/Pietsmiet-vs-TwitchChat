@@ -35,8 +35,6 @@ public class Host : MonoBehaviour
         GetComponent<PlayerInput>().enabled = PhotonNetwork.IsMasterClient;
         TwitchChatIRC.SetActive(PhotonNetwork.IsMasterClient);
         photonSync = GetComponentInChildren<PhotonSync>();
-
-        NextQuestion();
     }
     public void NextState(InputAction.CallbackContext _context)
     {
@@ -44,6 +42,7 @@ public class Host : MonoBehaviour
 
         switch (HostStateMachine.Value)
         {
+            case "LOBBY": HostStateMachine.Dispatch("START_QUIZ"); NextQuestion(); break;
             case "QUESTION_STARTED": StartVoting();  break;
             case "VOTING_STARTED":
                 if (!VotingsOpen.Value)
@@ -75,10 +74,10 @@ public class Host : MonoBehaviour
         HostStateMachine.Dispatch("REVEIL_ANSWER");
         Debug.Log("REVEIL ANSWER");
 
+        photonSync.ReveilAnswer(true);
         DistributePoints();
 
         photonSync.UpdateScore(PSPoints.Value, ChatPoints.Value);
-        photonSync.ReveilAnswer(true);
     }
     #region Calculating Points
     private void DistributePoints()
@@ -90,11 +89,13 @@ public class Host : MonoBehaviour
                 if (CheckIfAnswerIsCorrect(PSVotes))
                 { 
                     PSPoints.Value++;
+                    photonSync.PSAnswerDisplay(true);
                     Debug.Log("Pietsmiet was correct");
                 }
                 if (CheckIfAnswerIsCorrect(ChatVotes))
                 {
                     ChatPoints.Value++;
+                    photonSync.ChatAnswerDisplay(true);
                     Debug.Log("Chat was correct");
                 }
                 break;
@@ -105,13 +106,24 @@ public class Host : MonoBehaviour
                 Debug.Log($"Chat was {ChatDistance} away");
 
                 if (PSDistance < ChatDistance)
+                {
                     PSPoints.Value++;
+                    photonSync.PSAnswerDisplay(true);
+                    Debug.Log("Pietsmiet won");
+                }
                 else if (ChatDistance < PSDistance)
+                {
                     ChatPoints.Value++;
+                    photonSync.ChatAnswerDisplay(true);
+                    Debug.Log("Chat won");
+                }
                 else if(ChatDistance == PSDistance)
                 {
                     ChatPoints.Value++;
                     PSPoints.Value++;
+                    photonSync.PSAnswerDisplay(true);
+                    photonSync.ChatAnswerDisplay(true);
+                    Debug.Log("Nobody won");
                 }
                 break;
         }
@@ -125,7 +137,11 @@ public class Host : MonoBehaviour
         if (_list.VotesList.Count < 1)
             return false;
 
-        return currentQuestion.Answer.Contains(_list.VotesList[0].message);
+        List<string> Answers = currentQuestion.Answer;
+        for (int i = 0; i < Answers.Count; i++)
+            Answers[i] = Answers[i].ToUpper();
+
+        return Answers.Contains(_list.VotesList[0].message.ToUpper());
     }
 
     float CheckDistanceToAnswer(VoteList _list)
@@ -135,7 +151,8 @@ public class Host : MonoBehaviour
             return Mathf.Infinity;
 
         Question currentQuestion = (Question)Questions.Value[currentQuestionIndex];
-        if (float.TryParse(currentQuestion.Answer[0], out float answer) && float.TryParse(_list.VotesList[0].message, out float msg))
+        if (float.TryParse(NumberFormatter.ClearFormattingFromString(currentQuestion.Answer[0]), out float answer) 
+            && float.TryParse(NumberFormatter.ClearFormattingFromString(_list.VotesList[0].message), out float msg))
         {
             return answer - msg;
         }
@@ -144,10 +161,18 @@ public class Host : MonoBehaviour
     #endregion
     public void NextQuestion()
     {
-        HostStateMachine.Dispatch("NEXT_QUESTION");
-        Debug.Log("NEXT QUESTION");
+        if(currentQuestionIndex.Value < Questions.Value.Count - 1)
+        {
+            HostStateMachine.Dispatch("NEXT_QUESTION");
+            Debug.Log("NEXT QUESTION");
 
-        photonSync.ReveilAnswer(false);
-        photonSync.NextQuestion(currentQuestionIndex.Value + 1);
+            photonSync.ReveilAnswer(false);
+            photonSync.NextQuestion(currentQuestionIndex.Value + 1);
+        }
+        else
+        {
+            HostStateMachine.Dispatch("END_QUIZ");
+            photonSync.EndQuiz();
+        }
     }
 }

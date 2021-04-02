@@ -21,6 +21,15 @@ public class TimerUpdater : MonoBehaviour
         Timer = GetComponent<TextMeshProUGUI>();
     }
 
+    public void VotingsOpened(bool _state)
+    {
+        if (_state)
+        {
+            TextRect.localScale = Vector3.one;
+            TimerCircleImage.rectTransform.localScale = Vector3.one;
+        }
+    }
+
     public void UpdateTimer(float time)
     {
         Timer.text = $"{Mathf.Round(time)}";
@@ -36,7 +45,10 @@ public class TimerUpdater : MonoBehaviour
             { TextRect.LeanScale(Vector3.one, .2f); });
         }
         if (currentTime == 0)
+        {
             TimerCircleImage.rectTransform.LeanScale(Vector3.zero, 0.5f).setEase(CircleVanishLeanType);
+            TextRect.LeanScale(Vector3.zero, 0.5f).setEase(CircleVanishLeanType);
+        }
 
         oldTime = currentTime;
     }

@@ -10,6 +10,8 @@ public static class CheckForValidAnswer
         switch (question.questionType)
         {
             case Question.QuestionType.FloatGuess:
+                _message = NumberFormatter.ClearFormattingFromString(_message);
+
                 // message is a valid vote, if message is a float and in allowed Range or in Valid Answers
                 if (question.ValidVotes.Count > 0)
                     return question.ValidVotes.Contains(_message);
@@ -24,6 +26,8 @@ public static class CheckForValidAnswer
                 return false;
 
             case Question.QuestionType.IntegerGuess:
+                _message = NumberFormatter.ClearFormattingFromString(_message);
+
                 // message is a valid vote, if message is an integer and in allowed Range or in Valid Answers
                 if (question.ValidVotes.Count > 0)
                     return question.ValidVotes.Contains(_message);
@@ -38,8 +42,13 @@ public static class CheckForValidAnswer
                 return false;
 
             case Question.QuestionType.StringGuess:
-                if (question.ValidVotes.Count > 0)
-                    return question.ValidVotes.Contains(_message);
+                _message = _message.ToUpper();
+                List<string> ValidVotes = question.ValidVotes;
+                for (int i = 0; i < ValidVotes.Count; i++)
+                    ValidVotes[i] = ValidVotes[i].ToUpper();
+
+                if (ValidVotes.Count > 0)
+                    return ValidVotes.Contains(_message);
                 else if (question.ValidRange.x == 0 && question.ValidRange.y == 0)
                     return true;
                 else if(_message.Length <= question.ValidRange.y && _message.Length >= question.ValidRange.x)
@@ -49,5 +58,7 @@ public static class CheckForValidAnswer
         }
         return false;
     }
+
+    
 
 }

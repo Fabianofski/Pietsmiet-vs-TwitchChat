@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eedfd085b7c1224f9eae4c8cd71ed64, type: 3}
   m_Name: PSVoteList
   m_EditorClassIdentifier: 
-  VotesList: []
+  VotesList:
+  - message: 4mio
+    amount: 1

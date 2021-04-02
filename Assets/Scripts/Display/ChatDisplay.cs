@@ -21,6 +21,7 @@ public class ChatDisplay : MonoBehaviour
     [Header("Average")]
     [SerializeField] GameObject AverageParent;
     [SerializeField] TextMeshProUGUI AverageValueText;
+    [SerializeField] TextMeshProUGUI DistanceToAnswerText;
 
     [System.Serializable]
     public class Bar
@@ -41,6 +42,7 @@ public class ChatDisplay : MonoBehaviour
 
     [Header("Points")]
     [SerializeField] TextMeshProUGUI ScoreText;
+    [SerializeField] Animator CheckmarkAnimator;
 
     private void Update()
     {
@@ -81,7 +83,7 @@ public class ChatDisplay : MonoBehaviour
         foreach(Vote vote in VoteList.VotesList)
         {
             VoteAmount += vote.amount;
-            if (float.TryParse(vote.message, out float result))
+            if (float.TryParse(NumberFormatter.ClearFormattingFromString(vote.message), out float result))
                 sum += result * vote.amount;
             else
             {
@@ -91,18 +93,20 @@ public class ChatDisplay : MonoBehaviour
         }
         float average;
         if (VoteAmount != 0)
+        {
             average = sum / VoteAmount;
+            AverageValueText.text = NumberFormatter.AddFormattingToNumber(average);
+        }
         else
-            average = 0;
+        {
+            average = Mathf.Infinity;
+            AverageValueText.text = "???";
+        }
+
 
         Question currentQuestion = (Question)Questions.Value[currentQuestionIndex.Value];
-        if (currentQuestion.questionType == Question.QuestionType.FloatGuess)
-            average = Mathf.Round(average * 100) / 100;
-        else
-            average = Mathf.RoundToInt(average);
-
-        AverageValueText.text = average.ToString();
-
+        if(float.TryParse(currentQuestion.Answer[0], out float _answer))
+            DistanceToAnswerText.text = NumberFormatter.AddFormattingToNumber(_answer - average) + "";
     }
 
     void BarChart()
@@ -123,7 +127,7 @@ public class ChatDisplay : MonoBehaviour
             percentage = Mathf.Round(percentage * 1000)/10;
 
             bars[i].value.text = $"{percentage}% ({VoteList.VotesList[i].amount})";
-            bars[i].desc.text = $"{VoteList.VotesList[i].message}.:";
+            bars[i].desc.text = $"{NumberFormatter.AddFormattingToNumber(VoteList.VotesList[i].message)}.:";
         }       
     }
 
@@ -143,7 +147,7 @@ public class ChatDisplay : MonoBehaviour
             float percentage = votes[i].amount / TotalVotes * 100;
             percentage = Mathf.Round(percentage * 10)/10;
 
-            leaderboard[i].text = $"{votes[i].message} {percentage}% ({votes[i].amount})";
+            leaderboard[i].text = $"{NumberFormatter.AddFormattingToNumber(votes[i].message)} {percentage}% ({votes[i].amount})";
         }
     }
 
@@ -154,5 +158,10 @@ public class ChatDisplay : MonoBehaviour
     public static int SortbyVotes(Vote vote1, Vote vote2)
     {
         return vote2.amount.CompareTo(vote1.amount);
+    }
+
+    public void AnimateAnswer(bool AnswerCorrect)
+    {
+        CheckmarkAnimator.SetBool("Correct", AnswerCorrect);
     }
 }

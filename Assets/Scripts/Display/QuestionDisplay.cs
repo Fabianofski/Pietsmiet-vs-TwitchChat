@@ -19,7 +19,8 @@ public class QuestionDisplay : MonoBehaviour
 
         string _answer = "";
         for (int i = 0; i < _currentQuestion.AnswerDisplayAmount; i++)
-            _answer += _currentQuestion.Answer[i] + ", ";
+           _answer += NumberFormatter.AddFormattingToNumber(_currentQuestion.Answer[i]) + ", ";
+
         _answer = _answer.Substring(0, _answer.Length - 2);
 
         Answer.text = _answer;

@@ -85,6 +85,19 @@ MonoBehaviour:
     _variable: {fileID: 0}
     _variableInstancer: {fileID: 0}
   InputFieldAnswer: {fileID: 0}
+  NameText: {fileID: 0}
+  PSCorrectDisplayEvent:
+    _usage: 0
+    _event: {fileID: 11400000, guid: 9a0582e7ae8ec1e41b3f71185103a558, type: 2}
+    _eventInstancer: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
+  ChatCorrectDisplayEvent:
+    _usage: 0
+    _event: {fileID: 11400000, guid: 48e947856afa64142adef6af5cabe77c, type: 2}
+    _eventInstancer: {fileID: 0}
+    _variable: {fileID: 0}
+    _variableInstancer: {fileID: 0}
   UpdateChatScoreEvent:
     _usage: 0
     _event: {fileID: 11400000, guid: 046450f7ec6a18e4db7b753335bfd70a, type: 2}
@@ -100,6 +113,26 @@ MonoBehaviour:
   UpdateDisplayEvent:
     _usage: 0
     _event: {fileID: 11400000, guid: 957ef26386922e24d8eb3e8b521fd4f7, type: 2}
+    _eventInstancer: {fileID: 0}
+    _collection: {fileID: 0}
+    _list: {fileID: 0}
+    _collectionInstancer: {fileID: 0}
+    _listInstancer: {fileID: 0}
+  PSPoints:
+    _usage: 2
+    _value: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 11400000, guid: 83a3bb36e3a0eaf43a67f2719f0aaba0, type: 2}
+    _variableInstancer: {fileID: 0}
+  ChatPoints:
+    _usage: 2
+    _value: 0
+    _constant: {fileID: 0}
+    _variable: {fileID: 11400000, guid: 0ce03b9f30b38d941a248fd2e3061343, type: 2}
+    _variableInstancer: {fileID: 0}
+  QuizEndEvent:
+    _usage: 0
+    _event: {fileID: 11400000, guid: 717aedc926978af47a26bee9442e8ff4, type: 2}
     _eventInstancer: {fileID: 0}
     _collection: {fileID: 0}
     _list: {fileID: 0}

@@ -26,10 +26,10 @@ public class TwitchChat : MonoBehaviour
             // Clear all Votes
             Votes.VotesList.Clear();
             currentQuestion = (Question)Questions.Value[currentQuestionIndex.Value];
-            IRC.SendChatMessage("Voting started");
+            IRC.SendChatMessage($"Abstimmung startet: \"{currentQuestion.Title}\"");
         }
         else
-            IRC.SendChatMessage("Voting ended");
+            IRC.SendChatMessage("Abstimmung beendet!");
 
     }
 
@@ -53,12 +53,12 @@ public class TwitchChat : MonoBehaviour
 
         // Add Vote to Dictionary
         foreach (Vote vote in _list.VotesList)
-            if (vote.message == _answer)
+            if (vote.message.ToUpper() == _answer.ToUpper())
             {
                 vote.amount++;
                 return;
             }
-        Vote NewVote = new Vote() { message = _answer, amount = 1 };
+        Vote NewVote = new Vote() { message = _answer.ToUpper(), amount = 1 };
         _list.VotesList.Add(NewVote);
     }
 

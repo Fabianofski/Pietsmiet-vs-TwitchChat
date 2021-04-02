@@ -33,4 +33,5 @@ public class Question : UnityAtoms.AtomBaseVariable<object>
     [Range(1, 5)]
     public int AnswerDisplayAmount = 1;
     public List<string> Answer;
+
 }

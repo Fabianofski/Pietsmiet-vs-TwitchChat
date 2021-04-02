@@ -21,7 +21,7 @@ MonoBehaviour:
   StringOptions: []
   ImgOptions:
   - {fileID: 21300000, guid: 7377013011b4c3348809ff574abe799e, type: 3}
-  ValidRange: {x: -100, y: 100}
+  ValidRange: {x: -100, y: 1e+10}
   ValidVotes: []
   AnswerDisplayAmount: 1
   Answer:

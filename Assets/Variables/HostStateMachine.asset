@@ -20,12 +20,25 @@ MonoBehaviour:
   _triggerChangedOnOnEnable: 0
   _triggerChangedWithHistoryOnOnEnable: 0
   _oldValue: QUESTION_STARTED
-  _initialValue: QUESTION_STARTED
+  _initialValue: LOBBY
   _preChangeTransformers: []
   _transitionStarted: {fileID: 0}
   _completeCurrentTransition: {fileID: 0}
   _states:
     _list:
+    - _id:
+        _usage: 0
+        _value: LOBBY
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _cooldown:
+        _usage: 0
+        _value: 0
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _subMachine: {fileID: 0}
     - _id:
         _usage: 0
         _value: QUESTION_STARTED
@@ -68,6 +81,19 @@ MonoBehaviour:
     - _id:
         _usage: 0
         _value: ANSWER_REVEILED
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _cooldown:
+        _usage: 0
+        _value: 0
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _subMachine: {fileID: 0}
+    - _id:
+        _usage: 0
+        _value: QUIZ_ENDED
         _constant: {fileID: 0}
         _variable: {fileID: 0}
         _variableInstancer: {fileID: 0}
@@ -155,6 +181,46 @@ MonoBehaviour:
       _command:
         _usage: 0
         _value: NEXT_QUESTION
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _testCondition: {fileID: 0}
+      _raiseEventToCompleteTransition: 0
+    - _fromState:
+        _usage: 0
+        _value: LOBBY
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _toState:
+        _usage: 0
+        _value: QUESTION_STARTED
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _command:
+        _usage: 0
+        _value: START_QUIZ
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _testCondition: {fileID: 0}
+      _raiseEventToCompleteTransition: 0
+    - _fromState:
+        _usage: 0
+        _value: ANSWER_REVEILED
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _toState:
+        _usage: 0
+        _value: QUIZ_ENDED
+        _constant: {fileID: 0}
+        _variable: {fileID: 0}
+        _variableInstancer: {fileID: 0}
+      _command:
+        _usage: 0
+        _value: END_QUIZ
         _constant: {fileID: 0}
         _variable: {fileID: 0}
         _variableInstancer: {fileID: 0}

@@ -26,19 +26,27 @@ public class PhotonSync : MonoBehaviourPun
     [SerializeField] VoteList ChatVotes;
     [SerializeField] BoolEventReference ReveilAnswerEvent;
     [SerializeField] TMP_InputField InputFieldAnswer;
+    [SerializeField] TextMeshProUGUI NameText;
+    [SerializeField] BoolEventReference PSCorrectDisplayEvent;
+    [SerializeField] BoolEventReference ChatCorrectDisplayEvent;
 
     [Header("Score")]
     [SerializeField] IntEventReference UpdateChatScoreEvent;
     [SerializeField] IntEventReference UpdatePSScoreEvent;
     [SerializeField] VoidBaseEventReference UpdateDisplayEvent;
+    [SerializeField] IntReference PSPoints;
+    [SerializeField] IntReference ChatPoints;
+
+    [Header("End of Quiz")]
+    [SerializeField] VoidBaseEventReference QuizEndEvent;
 
     private void Awake()
     {
         if (!photonView.Owner.IsMasterClient)
         {
+            NameText.text = "Cam: "+ photonView.Owner.NickName;
             InputFieldAnswer.placeholder.GetComponent<TextMeshProUGUI>().text = photonView.Owner.NickName;
             SetParentEvent.Event.Raise(gameObject.transform.parent.gameObject);
-            InputFieldAnswer.interactable = photonView.IsMine;
         }
     }
 
@@ -83,6 +91,8 @@ public class PhotonSync : MonoBehaviourPun
     public void SendVotesToMasterRPC()
     {
         string _message = InputFieldAnswer.text;
+        if (string.IsNullOrWhiteSpace(_message)) return;
+
         PhotonView[] photonViews = FindObjectsOfType<PhotonView>();
 
         photonView.RPC("UpdateInputFieldRPC", RpcTarget.All, _message);
@@ -103,7 +113,7 @@ public class PhotonSync : MonoBehaviourPun
         if (!photonView.IsMine) return;
 
         Debug.Log($"Received Vote: { _answer}");
-        CountVote(PSVotes, _answer);
+        CountVote(PSVotes, _answer.ToUpper());
         UpdateDisplay();
     }
     #endregion
@@ -125,7 +135,7 @@ public class PhotonSync : MonoBehaviourPun
         if (!photonView.IsMine) return;
 
         Debug.Log("Received Vote: " + _answer + " " + _amount);
-        Vote vote = new Vote() { message = _answer, amount = _amount };
+        Vote vote = new Vote() { message = _answer.ToUpper(), amount = _amount };
         ChatVotes.VotesList.Add(vote);
         UpdateDisplay();
     }
@@ -147,12 +157,16 @@ public class PhotonSync : MonoBehaviourPun
 
         // Add Vote to Dictionary
         foreach (Vote vote in _list.VotesList)
-            if (vote.message == _answer)
+            if (vote.message.ToUpper() == _answer.ToUpper())
             {
                 vote.amount++;
                 return;
             }
-        Vote NewVote = new Vote() { message = _answer, amount = 1 };
+
+        if (currentQuestion.questionType != Question.QuestionType.StringGuess)
+            _answer = NumberFormatter.ClearFormattingFromString(_answer);
+
+        Vote NewVote = new Vote(){message = _answer.ToUpper(), amount = 1 };
         _list.VotesList.Add(NewVote);
     }
     #endregion
@@ -170,6 +184,30 @@ public class PhotonSync : MonoBehaviourPun
     }
     #endregion
 
+    #region Sync AnswerDisplay
+
+    public void PSAnswerDisplay(bool _state)
+    {
+        photonView.RPC("PSAnswerDisplayRPC", RpcTarget.All, _state);
+    }
+
+    public void ChatAnswerDisplay(bool _state)
+    {
+        photonView.RPC("ChatAnswerDisplayRPC", RpcTarget.All, _state);
+    }
+    [PunRPC]
+    void PSAnswerDisplayRPC(bool _state)
+    {
+        PSCorrectDisplayEvent.Event.Raise(_state);
+    }
+    [PunRPC]
+    void ChatAnswerDisplayRPC(bool _state)
+    {
+        ChatCorrectDisplayEvent.Event.Raise(_state);
+    }
+
+    #endregion
+
     #region Sync Score
     public void UpdateScore(int _psScore, int _chatScore)
     {
@@ -179,23 +217,25 @@ public class PhotonSync : MonoBehaviourPun
 
     void UpdatePSScore(int _score)
     {
-        photonView.RPC("UpdatePSScoreRPC", RpcTarget.Others, _score);
+        photonView.RPC("UpdatePSScoreRPC", RpcTarget.All, _score);
     }
 
     void UpdateChatScore(int _score)
     {
-        photonView.RPC("UpdateChatScoreRPC", RpcTarget.Others, _score);
+        photonView.RPC("UpdateChatScoreRPC", RpcTarget.All, _score);
     }
 
     [PunRPC]
     void UpdatePSScoreRPC(int _score)
     {
+        PSPoints.Value = _score;
         UpdatePSScoreEvent.Event.Raise(_score);
     }
 
     [PunRPC]
     void UpdateChatScoreRPC(int _score)
     {
+        ChatPoints.Value = _score;
         UpdateChatScoreEvent.Event.Raise(_score);
     }
     #endregion
@@ -213,6 +253,22 @@ public class PhotonSync : MonoBehaviourPun
         PSVotes.VotesList.Clear();
         currentQuestionIndex.Value = _index;
     }
+    #endregion
+
+    #region Sync End of Quiz
+
+    public void EndQuiz()
+    {
+        photonView.RPC("EndQuizRPC", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void EndQuizRPC()
+    {
+        Debug.Log("END QUIZ");
+        QuizEndEvent.Event.Raise();
+    }
+
     #endregion
 
     public void EnableInputField(bool _state)

@@ -17,14 +17,11 @@ MonoBehaviour:
   questionType: 0
   displayType: 0
   answerType: 1
-  Title: Wie viele Abonennten hat Pietsmiet auf YT?
+  Title: Wie viele Einwohner hat der Vatikanstadt?
   StringOptions: []
   ImgOptions: []
-  ValidRange: {x: 0, y: 0}
+  ValidRange: {x: 0, y: 1000000}
   ValidVotes: []
   AnswerDisplayAmount: 1
   Answer:
-  - 4000000
-  - 4000000
-  - 4000000
-  - 4000000
+  - 453
