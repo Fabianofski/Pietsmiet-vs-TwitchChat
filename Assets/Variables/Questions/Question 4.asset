@@ -10,19 +10,32 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 53cc5c7fb8ae7ba428a2cda0f80ce8ac, type: 3}
-  m_Name: Question 3
+  m_Name: Question 4
   m_EditorClassIdentifier: 
   _developerDescription: 
   _id: 
   questionType: 2
-  displayType: 2
+  displayType: 1
   answerType: 0
-  Title: "Zu welchem Land geh\xF6rt diese Flagge?"
-  StringOptions: []
-  ImgOptions:
-  - {fileID: 21300000, guid: bb53777a9ef4a0b4abd696f6b9026dca, type: 3}
+  Title: "Wo wird auf dem Spielfeld der Ansto\xDF ausgef\xFChrt?"
+  StringOptions:
+  - Mittelstrich
+  - Mittelkomma
+  - Mittelsemikolon
+  - Mittelpunkt
+  ImgOptions: []
   ValidRange: {x: 0, y: 0}
-  ValidVotes: []
+  ValidVotes:
+  - 1
+  - 2
+  - 3
+  - 4
+  - A
+  - B
+  - C
+  - D
   AnswerDisplayAmount: 1
   Answer:
-  - Deutschland
+  - Mittelpunkt
+  - 4
+  - D

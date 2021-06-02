@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PSVoteList
   m_EditorClassIdentifier: 
   VotesList:
-  - message: 4mio
-    amount: 1
+  - message: 10tsd
+    amount: 3
